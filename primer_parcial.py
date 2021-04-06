@@ -15,11 +15,11 @@ rural_lpe = np.array([248461, 243608, 239969, 234592, 214690, 200575, 197328, 19
 rural_lpt = np.array([506201, 497049, 488172, 473601, 446798, 427893, 416310, 403759, 381742, 374096,
                       352073, 329460, 321358, 306770, 279728, 250008, 225239, 217526, 203235, 170609, 146324, 127812])
 
-print(len(anho))
-print(len(urbana_lpe))
-print(len(urbana_lpt))
-print(len(rural_lpe))
-print(len(rural_lpt))
+# print(len(anho))
+# print(len(urbana_lpe))
+# print(len(urbana_lpt))
+# print(len(rural_lpe))
+# print(len(rural_lpt))
 
 total_array = []
 for an, u_lpe, u_lpt, r_lpe, r_lpt in zip(anho, urbana_lpe, urbana_lpt, rural_lpe, rural_lpt):
@@ -33,18 +33,40 @@ total_array_np
 
 class primerParcial:
 
+    data = {}
+
     def crearDiccionario(self, elementoIterar, array1, array2, array3, array4):
-        data = {}
         try:
             for idx, year in enumerate(elementoIterar):
-                print(idx)
                 lst_data = [array1[idx], array2[idx], array3[idx], array4[idx]]
-                data[year] = lst_data
-        except :
+                self.data[year] = lst_data
+        except:
             print(sys.exc_info()[0])
-            
-        print(data)
 
+        # print(self.data)
+
+    def obtenerDatos(self, zona=None, linea_pobreza=None):
+        if zona is None:
+            return {'zonas': ['urbana', 'rural']}
+        elif linea_pobreza is None:
+            return {'lineas': ['pobreza extrema', 'pobreza total']}
+        elif zona not in ['urbana', 'total'] or linea_pobreza not in ['extrema', 'total']:
+            return {'error':'no se reconocen los parametros'}
+        else:
+            idx = 0
+            if (zona == 'urbana' and linea_pobreza == 'total'):
+                idx = 1
+            elif (zona == 'rural' and linea_pobreza == 'extrema'):
+                idx = 2
+            elif (zona == 'rural' and linea_pobreza == 'total'):
+                idx = 3
+
+            result = {}
+            for key, value in self.data.items():
+                result[key] = value[idx]
+            return result
 
 t = primerParcial()
 t.crearDiccionario(elementoIterar=anho, array1=urbana_lpe, array2=urbana_lpt, array3=rural_lpe, array4=rural_lpt)
+result = t.obtenerDatos(zona='erer', linea_pobreza='extrema')
+print(result)
