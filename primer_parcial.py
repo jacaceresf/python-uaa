@@ -15,11 +15,11 @@ rural_lpe = np.array([248461, 243608, 239969, 234592, 214690, 200575, 197328, 19
 rural_lpt = np.array([506201, 497049, 488172, 473601, 446798, 427893, 416310, 403759, 381742, 374096,
                       352073, 329460, 321358, 306770, 279728, 250008, 225239, 217526, 203235, 170609, 146324, 127812])
 
-# print(len(anho))
-# print(len(urbana_lpe))
-# print(len(urbana_lpt))
-# print(len(rural_lpe))
-# print(len(rural_lpt))
+print(anho)
+print(urbana_lpe)
+print(urbana_lpt)
+print(rural_lpe)
+print(rural_lpt)
 
 total_array = []
 for an, u_lpe, u_lpt, r_lpe, r_lpt in zip(anho, urbana_lpe, urbana_lpt, rural_lpe, rural_lpt):
@@ -27,7 +27,7 @@ for an, u_lpe, u_lpt, r_lpe, r_lpt in zip(anho, urbana_lpe, urbana_lpt, rural_lp
     total_array.append(arr)
 
 
-total_array_np = np.array([total_array])
+total_array_np = np.array(total_array)
 total_array_np
 
 
@@ -66,7 +66,24 @@ class primerParcial:
                 result[key] = value[idx]
             return result
 
+    def obtenerValorMaximoPobrezaUrbana(self, total_array):
+        """
+        Función que imprima el máximo valor de la línea de Pobreza Total y Extrema (urbana) y que también imprima el año en que ocurrió este evento.
+        """
+        max_arr = np.amax(total_array_np, axis=0)
+        print('Valor maximo de pobreza urbana total: {} / extrema: {} en el anho {}'.format(max_arr[2], max_arr[1], max_arr[0]))
+
+    def obtenerValorMinimoPobrezaRural(self, total_array):
+        """
+        Función que imprima el mínimo valor de la línea de Pobreza Total y Extrema (rural) y que también imprima el año en que ocurrió este evento.
+        """
+        max_arr = np.amin(total_array_np, axis=0)
+        print('Valor minimo de pobreza urbana total: {} / extrema: {} en el anho {}'.format(max_arr[4], max_arr[3], max_arr[0]))
+
 t = primerParcial()
 t.crearDiccionario(elementoIterar=anho, array1=urbana_lpe, array2=urbana_lpt, array3=rural_lpe, array4=rural_lpt)
 result = t.obtenerDatos(zona='erer', linea_pobreza='extrema')
-print(result)
+# print(result)
+
+# t.obtenerValorMaximoPobrezaUrbana(total_array_np)
+# t.obtenerValorMinimoPobrezaRural(total_array_np)
