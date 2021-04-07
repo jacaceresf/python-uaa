@@ -51,7 +51,7 @@ class primerParcial:
         elif linea_pobreza is None:
             return {'lineas': ['pobreza extrema', 'pobreza total']}
         elif zona not in ['urbana', 'total'] or linea_pobreza not in ['extrema', 'total']:
-            return {'error':'no se reconocen los parametros'}
+            return {'error': 'no se reconocen los parametros'}
         else:
             idx = 0
             if (zona == 'urbana' and linea_pobreza == 'total'):
@@ -71,19 +71,57 @@ class primerParcial:
         Función que imprima el máximo valor de la línea de Pobreza Total y Extrema (urbana) y que también imprima el año en que ocurrió este evento.
         """
         max_arr = np.amax(total_array_np, axis=0)
-        print('Valor maximo de pobreza urbana total: {} / extrema: {} en el anho {}'.format(max_arr[2], max_arr[1], max_arr[0]))
+        print('Valor maximo de pobreza urbana total: {} / extrema: {} en el anho {}'.format(
+            max_arr[2], max_arr[1], max_arr[0]))
 
     def obtenerValorMinimoPobrezaRural(self, total_array):
         """
         Función que imprima el mínimo valor de la línea de Pobreza Total y Extrema (rural) y que también imprima el año en que ocurrió este evento.
         """
         max_arr = np.amin(total_array_np, axis=0)
-        print('Valor minimo de pobreza urbana total: {} / extrema: {} en el anho {}'.format(max_arr[4], max_arr[3], max_arr[0]))
+        print('Valor minimo de pobreza urbana total: {} / extrema: {} en el anho {}'.format(
+            max_arr[4], max_arr[3], max_arr[0]))
+
+    def obtenerArraysZipeados(self, anho, urbana_lpe, urbana_lpt, rural_lpe, rural_lpt):
+        """
+        Crear una función que retorne en un zip los 5 arrays.
+        """
+        return zip(anho, urbana_lpe, urbana_lpt, rural_lpe, rural_lpt)
+
+    def obtenerCostoOtrosBienesServicios(self):
+        result = []
+        for anho, valores in self.data.items():
+            result.append([anho, valores[1] - valores[0], valores[3] - valores[2]])
+        return np.array(result)
 
 t = primerParcial()
-t.crearDiccionario(elementoIterar=anho, array1=urbana_lpe, array2=urbana_lpt, array3=rural_lpe, array4=rural_lpt)
+t.crearDiccionario(elementoIterar=anho, array1=urbana_lpe,
+                   array2=urbana_lpt, array3=rural_lpe, array4=rural_lpt)
 result = t.obtenerDatos(zona='erer', linea_pobreza='extrema')
 # print(result)
 
 # t.obtenerValorMaximoPobrezaUrbana(total_array_np)
 # t.obtenerValorMinimoPobrezaRural(total_array_np)
+
+# zip_arr = t.obtenerArraysZipeados(anho, urbana_lpe, urbana_lpt, rural_lpe, rural_lpt)
+
+# anho_uz, urbana_lpe_uz, urbana_lpt_uz, rural_lpe_uz, rural_lpt_uz = zip(*zip_arr)
+# print(anho_uz)
+# print(urbana_lpe_uz)
+# print(urbana_lpt_uz)
+# print(rural_lpe_uz)
+# print(rural_lpt_uz)
+
+costo_otros_bienes_y_servicios = t.obtenerCostoOtrosBienesServicios()
+# print(costo_otros_bienes_y_servicios)
+
+year_min_rural = costo_otros_bienes_y_servicios[:][np.argmin(costo_otros_bienes_y_servicios[:, 1])][0]
+year_min_urbana = costo_otros_bienes_y_servicios[:][np.argmin(costo_otros_bienes_y_servicios[:, 2])][0]
+year_max_rural = costo_otros_bienes_y_servicios[:][np.argmax(costo_otros_bienes_y_servicios[:, 1])][0]
+year_max_urbana = costo_otros_bienes_y_servicios[:][np.argmax(costo_otros_bienes_y_servicios[:, 2])][0]
+
+print('El anho {} tuvo mayor costo (zona rural): {} Gs.'.format(year_max_rural, costo_otros_bienes_y_servicios[:, 1].max()))
+print('El anho {} tuvo menor costo (zona rural): {} Gs.'.format(year_min_rural, costo_otros_bienes_y_servicios[:, 1].min()))
+
+print('El anho {} tuvo mayor costo (zona urbana): {} Gs.'.format(year_max_urbana, costo_otros_bienes_y_servicios[:, 2].max()))
+print('El anho {} tuvo menor costo (zona urbana): {} Gs.'.format(year_min_urbana, costo_otros_bienes_y_servicios[:, 2].min()))
